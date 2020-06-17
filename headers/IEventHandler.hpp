@@ -1,29 +1,21 @@
-/**
- * Project Untitled
- */
+#ifndef IEVENTHANDLER_HPP
+#define IEVENTHANDLER_HPP
 
+#include "EventManager.hpp"
 
-#ifndef _IEVENTHANDLER_H
-#define _IEVENTHANDLER_H
+#include <memory>
+
+class EventManager;
+
 
 class IEventHandler {
-public: 
-    
-/**
- * @param event
- */
-virtual void handleEvent(std::shared_ptr<Event> event) = 0;
-    
-/**
- * @param action
- */
-virtual void sendEvent(EAction action) = 0;
-private: 
+public:
+    virtual void handleEvent(std::shared_ptr<Event> event) = 0;
+    virtual void sendEvent(std::shared_ptr<Event> event) = 0;
+private:
+    void subscribe();
+    void unsubscribe();
     EventManager* mEventManager;
-    
-void subscribe();
-    
-void unsubscribe();
 };
 
-#endif //_IEVENTHANDLER_H
+#endif //IEVENTHANDLER_HPP

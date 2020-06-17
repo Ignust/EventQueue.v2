@@ -1,14 +1,13 @@
-/**
- * Project Untitled
- */
+#ifndef EVENT_HPP
+#define EVENT_HPP
 
+enum EAction {
 
-#ifndef _EVENT_H
-#define _EVENT_H
+};
 
 class Event {
-public: 
+public:
     EAction action;
 };
 
-#endif //_EVENT_H
+#endif //_EVENT_HPP

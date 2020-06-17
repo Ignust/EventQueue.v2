@@ -3,7 +3,7 @@
  */
 
 
-#include "EventManager.h"
+#include "EventManager.hpp"
 
 /**
  * EventManager implementation
