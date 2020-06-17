@@ -2,6 +2,7 @@
 *.pro
 *.user
 #*.txt
+CMakeLists.txt.user
 
 #Folders
 build*
