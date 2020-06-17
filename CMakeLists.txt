@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.5.1)
 
-#project(QueueEvent LANGUAGES CXX )
-project(QueueEvent)
+#project(EventQueue.v2 LANGUAGES CXX )
+project(EventQueue.v2)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -18,4 +18,4 @@ set(SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/sources/IEventHandler.cpp
 )
 
-add_executable(QueueEvent ${SOURCES})
+add_executable(EventQueue.v2 ${SOURCES})
