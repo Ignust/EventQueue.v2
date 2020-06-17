@@ -1,0 +1,10 @@
+  
+*.pro
+*.user
+#*.txt
+CMakeLists.txt.user
+
+#Folders
+build*
+.project
+.cproject

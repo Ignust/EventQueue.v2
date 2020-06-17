@@ -1,26 +1,13 @@
-/**
- * Project Untitled
- */
+#ifndef EVENTHANDLER_HPP
+#define EVENTHANDLER_HPP
 
-
-#ifndef _EVENTHANDLER_H
-#define _EVENTHANDLER_H
-
-#include "IEventHandler.h"
+#include "IEventHandler.hpp"
 
 
 class EventHandler: public IEventHandler {
-public: 
-    
-/**
- * @param event
- */
-void handleEvent(std::shared_ptr<Event> event);
-    
-/**
- * @param event
- */
-void sendEvent(std::shared_ptr<Event> event);
+public:
+    void handleEvent(std::shared_ptr<Event> event)override;
+    void sendEvent(std::shared_ptr<Event> event)override;
 };
 
-#endif //_EVENTHANDLER_H
+#endif //EVENTHANDLER_HPP

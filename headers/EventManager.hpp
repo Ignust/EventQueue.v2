@@ -1,34 +1,29 @@
-/**
- * Project Untitled
- */
+#ifndef EVENTMANAGER_HPP
+#define EVENTMANAGER_HPP
 
+#include "Event.hpp"
+#include "IEventHandler.hpp"
 
-#ifndef _EVENTMANAGER_H
-#define _EVENTMANAGER_H
+#include <memory>
+#include <thread>
+#include <mutex>
+#include <list>
+#include <queue>
+
+class IEventHandler;
 
 class EventManager {
-public: 
-    
-/**
- * @param user
- */
-void subscribe(IEventHandler* user);
-    
-/**
- * @param user
- */
-void unsubscribe(IEventHandler* user);
-    
-/**
- * @param event
- */
-void pushEvent(std::shared_ptr<Event> event);
-private: 
+public:
+
+    void subscribe(IEventHandler* user);
+    void unsubscribe(IEventHandler* user);
+    void pushEvent(std::shared_ptr<Event> event);
+private:
+    void manageEvents();
+
     std::list<IEventHandler*> mEventHandlerList;
-    std::queue<std::shared_ptr<unEvent>> mEventQueue;
-    std:: mutex mMutex;
-    
-void manageEvents();
+    std::queue<std::shared_ptr<Event>> mEventQueue;
+    std::mutex mMutex;
 };
 
-#endif //_EVENTMANAGER_H
+#endif //EVENTMANAGER_HPP
