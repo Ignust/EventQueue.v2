@@ -11,21 +11,26 @@ EventManager::EventManager()
 void EventManager::subscribe(IEventHandler* user)
 //------------------------------------------------------------------------------------------
 {
-
+    mEventHandlerList.push_back(user);
 }
 
 //------------------------------------------------------------------------------------------
 void EventManager::unsubscribe(IEventHandler* user)
 //------------------------------------------------------------------------------------------
 {
-
+    for ( auto it = mEventHandlerList.begin(); it != mEventHandlerList.end(); ++it) {
+        if (it.operator*() == user){
+            mEventHandlerList.erase(it);
+            break;
+        }
+    }
 }
 
 //------------------------------------------------------------------------------------------
 void EventManager::pushEvent(std::shared_ptr<Event> event)
 //------------------------------------------------------------------------------------------
 {
-
+    mEventQueue.push(event);
 }
 
 //------------------------------------------------------------------------------------------
