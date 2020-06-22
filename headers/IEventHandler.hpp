@@ -13,8 +13,9 @@ public:
     IEventHandler();
     virtual~IEventHandler();
     virtual void handleEvent(std::shared_ptr<Event> event) = 0;
-    virtual void sendEvent(std::shared_ptr<Event> event) = 0;
 
+protected:
+    void sendEvent(std::shared_ptr<Event> event);
 private:
     void subscribe();
     void unsubscribe();
