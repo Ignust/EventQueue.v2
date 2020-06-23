@@ -5,7 +5,6 @@
 #include "IEventHandler.hpp"
 
 #include <memory>
-#include <thread>
 #include <mutex>
 #include <list>
 #include <queue>
@@ -21,6 +20,7 @@ public:
     void pushEvent(std::shared_ptr<Event> event);
 private:
     void manageEvents();
+    void sendEvent(std::shared_ptr<Event> event);
 
     std::list<IEventHandler*> mEventHandlerList;
     std::queue<std::shared_ptr<Event>> mEventQueue;
