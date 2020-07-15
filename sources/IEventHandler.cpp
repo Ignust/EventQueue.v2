@@ -7,6 +7,7 @@ IEventHandler::IEventHandler()
 //------------------------------------------------------------------------------------------
 {
     subscribe();
+    sendEvent(std::make_shared<Event>(Event(CREATION_OBJECT)));
 }
 
 //------------------------------------------------------------------------------------------
@@ -35,6 +36,7 @@ void IEventHandler::subscribe()
 void IEventHandler::unsubscribe()
 //------------------------------------------------------------------------------------------
 {
+    sendEvent(std::make_shared<Event>(Event(DELETE_OBJECT)));
     mEventManager.unsubscribe(this);
 }
 

@@ -3,11 +3,15 @@
 
 enum EAction {
     DEFAULT = 0,
-    ACTION1 = 1
+    ACTION1 = 1,
+    CREATION_OBJECT,
+    DELETE_OBJECT
+
 };
 
 class Event {
 public:
+    Event(EAction act) : action(act){}
     EAction action;
 };
 
