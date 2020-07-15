@@ -9,6 +9,7 @@ set(CMAKE_CXX_FLAGS "-Wall -pthread")
 
 include_directories(PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/headers/
+    ${CMAKE_CURRENT_SOURCE_DIR}/sources/
 )
 
 set(SOURCES
