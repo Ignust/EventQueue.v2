@@ -8,8 +8,9 @@ int main()
 {
     std::cout << "start main" << std::endl;
 
-
-    EventHandler obj1;    
+    EventHandler* obj2 = new EventHandler();
+    EventHandler obj1;
+    delete obj2;
 
     //std::shared_ptr<Event> event(new Event);
     //event->action = ACTION1;
