@@ -1,7 +1,7 @@
 #include "EventManager.hpp"
 
 #include <thread>
-//#include <iostream>
+#include <iostream>
 //using namespace std;
 
 //------------------------------------------------------------------------------------------
