@@ -8,6 +8,7 @@
 #include <mutex>
 #include <list>
 #include <queue>
+#include <map>
 
 class IEventHandler;
 
@@ -18,12 +19,14 @@ public:
     void subscribe(IEventHandler* user);
     void unsubscribe(IEventHandler* user);
     void pushEvent(std::shared_ptr<Event> event);
+    void subscriptionToEvent(EAction event,IEventHandler* user);
 private:
     void manageEvents();
     void sendEvent(std::shared_ptr<Event> event);
 
     std::list<IEventHandler*> mEventHandlerList;
     std::queue<std::shared_ptr<Event>> mEventQueue;
+    std::map<EAction,std::list<IEventHandler*>> mSubscriptionMap;
     std::mutex mMutex;
 };
 
