@@ -21,7 +21,6 @@ private:
     void unsubscribe();
 
     static EventManager mEventManager;
-
 };
 
 #endif //IEVENTHANDLER_HPP
