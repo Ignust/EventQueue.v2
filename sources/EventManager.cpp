@@ -2,14 +2,14 @@
 
 #include <thread>
 #include <iostream>
-//using namespace std;
+using namespace std;
 
 //------------------------------------------------------------------------------------------
 EventManager::EventManager()
+    : mRunning(false)
 //------------------------------------------------------------------------------------------
 {
-    std::thread th([&](){manageEvents();});
-    th.detach();
+
 }
 
 //------------------------------------------------------------------------------------------
@@ -17,19 +17,28 @@ void EventManager::subscribe(IEventHandler* user)
 //------------------------------------------------------------------------------------------
 {
     std::lock_guard<std::mutex> lock(mMutex);
+
     mEventHandlerList.push_back(user);
+    if(!mRunning){
+        mRunning = true;
+        std::thread th([&](){manageEvents();});
+        th.detach();
+    }
 }
 
 //------------------------------------------------------------------------------------------
 void EventManager::unsubscribe(IEventHandler* user)
 //------------------------------------------------------------------------------------------
 {
+    std::lock_guard<std::mutex> lock(mMutex);
+
     for ( auto it = mEventHandlerList.begin(); it != mEventHandlerList.end(); ++it) {
         if (it.operator*() == user){
             mEventHandlerList.erase(it);
             break;
         }
     }
+    mRunning = !mEventHandlerList.empty();
 }
 
 //------------------------------------------------------------------------------------------
@@ -47,17 +56,19 @@ void EventManager::pushEvent(std::shared_ptr<Event> event)
 void EventManager::manageEvents()
 //------------------------------------------------------------------------------------------
 {
-    //cout << "start manageEvents" << endl;
-    while (!mEventQueue.empty()) {
-        //cout << "while start" << endl;
-        mMutex.lock();
-        std::shared_ptr<Event> tempEvent = mEventQueue.front();
-        mEventQueue.pop();
-        mMutex.unlock();
-        sendEvent(tempEvent);
+    while (getRunning()) {
+        //cout << "start manageEvents" << endl;
+        while (!mEventQueue.empty()) {
+            //cout << "while start" << endl;
+            mMutex.lock();
+            std::shared_ptr<Event> tempEvent = mEventQueue.front();
+            mEventQueue.pop();
+            mMutex.unlock();
+            sendEvent(tempEvent);
+        }
+        //cout << "while end" << endl;
     }
-    //cout << "while end" << endl;
-    manageEvents();
+    //cout << "manageEvents end" << endl;
 }
 
 //------------------------------------------------------------------------------------------
@@ -68,3 +79,13 @@ void EventManager::sendEvent(std::shared_ptr<Event> event)
         it.operator*()->handleEvent(event);
     }
 }
+
+//------------------------------------------------------------------------------------------
+bool EventManager::getRunning()
+//------------------------------------------------------------------------------------------
+{
+    std::lock_guard<std::mutex> lock(mMutex);
+    return mRunning;
+}
+
+

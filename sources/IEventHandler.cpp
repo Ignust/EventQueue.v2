@@ -1,4 +1,5 @@
 #include "IEventHandler.hpp"
+#include <iostream>
 
 EventManager IEventHandler::mEventManager;
 
@@ -21,13 +22,14 @@ IEventHandler::~IEventHandler()
 void IEventHandler::sendEvent(std::shared_ptr<Event> event)
 //------------------------------------------------------------------------------------------
 {
+    //std::cout << event->action << std::endl;
     mEventManager.pushEvent(event);
 }
 
 //------------------------------------------------------------------------------------------
 void IEventHandler::subscribe()
 //------------------------------------------------------------------------------------------
-{
+{    
     IEventHandler::mEventManager.subscribe(this);
 
 }
@@ -36,8 +38,8 @@ void IEventHandler::subscribe()
 void IEventHandler::unsubscribe()
 //------------------------------------------------------------------------------------------
 {
-    sendEvent(std::make_shared<Event>(Event(DELETE_OBJECT)));
     mEventManager.unsubscribe(this);
+    sendEvent(std::make_shared<Event>(Event(DELETE_OBJECT)));    
 }
 
 

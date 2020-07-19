@@ -19,7 +19,9 @@ protected:
 private:
     void subscribe();
     void unsubscribe();
+
     static EventManager mEventManager;
+
 };
 
 #endif //IEVENTHANDLER_HPP
