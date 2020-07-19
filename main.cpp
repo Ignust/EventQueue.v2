@@ -12,12 +12,7 @@ int main()
     EventHandler obj1;
     delete obj2;
 
-    //std::shared_ptr<Event> event(new Event);
-    //event->action = ACTION1;
-    //obj1.sendEvent(event);
-
-
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
     std::cout << "end main" << std::endl;
 
     return 0;

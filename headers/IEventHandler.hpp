@@ -19,6 +19,7 @@ protected:
 private:
     void subscribe();
     void unsubscribe();
+
     static EventManager mEventManager;
 };
 
