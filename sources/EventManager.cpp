@@ -13,12 +13,20 @@ EventManager::EventManager()
 }
 
 //------------------------------------------------------------------------------------------
-void EventManager::subscribe(IEventHandler* user)
+void EventManager::pushEvent(std::shared_ptr<Event> event)
+//------------------------------------------------------------------------------------------
+{
+    std::lock_guard<std::mutex> lock(mMutex);
+    mEventQueue.push(event);
+}
+
+//------------------------------------------------------------------------------------------
+void EventManager::subscriptionToEvent(EAction action,IEventHandler* user)
 //------------------------------------------------------------------------------------------
 {
     std::lock_guard<std::mutex> lock(mMutex);
 
-    mEventHandlerList.push_back(user);
+    mSubscriptionMap[action].push_back(user);
     if(!mRunning){
         mRunning = true;
         std::thread th([&](){manageEvents();});
@@ -27,26 +35,29 @@ void EventManager::subscribe(IEventHandler* user)
 }
 
 //------------------------------------------------------------------------------------------
-void EventManager::unsubscribe(IEventHandler* user)
+void EventManager::unsubscriptionToEvent(EAction action,IEventHandler* user)
 //------------------------------------------------------------------------------------------
 {
     std::lock_guard<std::mutex> lock(mMutex);
 
-    for ( auto it = mEventHandlerList.begin(); it != mEventHandlerList.end(); ++it) {
-        if (it.operator*() == user){
-            mEventHandlerList.erase(it);
+    auto pair = mSubscriptionMap.find(action);
+    if (pair == mSubscriptionMap.end()){
+        return;
+    }
+
+    auto & list = pair->second;
+    for (auto it = list.begin(); it != list.end(); ++it) {
+        if (*it == user){
+            it = list.erase(it);
             break;
         }
     }
-    mRunning = !mEventHandlerList.empty();
-}
 
-//------------------------------------------------------------------------------------------
-void EventManager::pushEvent(std::shared_ptr<Event> event)
-//------------------------------------------------------------------------------------------
-{
-    std::lock_guard<std::mutex> lock(mMutex);
-    mEventQueue.push(event);
+    if(list.empty()){
+        mSubscriptionMap.erase(action);
+    }
+
+    mRunning = !mSubscriptionMap.empty();
 }
 
 //------------------------------------------------------------------------------------------
@@ -69,9 +80,15 @@ void EventManager::manageEvents()
 void EventManager::sendEvent(std::shared_ptr<Event> event)
 //------------------------------------------------------------------------------------------
 {
-    for ( auto it = mEventHandlerList.begin(); it != mEventHandlerList.end(); ++it) {
-        it.operator*()->handleEvent(event);
+    std::lock_guard<std::mutex> lock(mMutex);
+    auto pair = mSubscriptionMap.find(event->action);
+    if (pair != mSubscriptionMap.end()) {
+        const auto & list = pair->second;
+        for (auto & subscriber : list) {
+             subscriber->handleEvent(event);
+        }
     }
+
 }
 
 //------------------------------------------------------------------------------------------
