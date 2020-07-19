@@ -16,10 +16,9 @@ class EventManager {
 public:
 
     EventManager();
-    void subscribe(IEventHandler* user);
-    void unsubscribe(IEventHandler* user);
     void pushEvent(std::shared_ptr<Event> event);
-    void subscriptionToEvent(EAction event,IEventHandler* user);
+    void subscriptionToEvent(EAction action,IEventHandler* user);
+    void unsubscriptionToEvent(EAction action,IEventHandler* user);
 private:
     void manageEvents();
     void sendEvent(std::shared_ptr<Event> event);
