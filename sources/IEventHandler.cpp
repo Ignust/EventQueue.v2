@@ -1,4 +1,5 @@
 #include "IEventHandler.hpp"
+#include <iostream>
 
 EventManager IEventHandler::mEventManager;
 
@@ -6,7 +7,8 @@ EventManager IEventHandler::mEventManager;
 IEventHandler::IEventHandler()
 //------------------------------------------------------------------------------------------
 {
-    subscribe();
+    //subscribeToEvent(CREATION_OBJECT);
+    //subscribeToEvent(DELETE_OBJECT);
     sendEvent(std::make_shared<Event>(Event(CREATION_OBJECT)));
 }
 
@@ -14,7 +16,18 @@ IEventHandler::IEventHandler()
 IEventHandler::~IEventHandler()
 //------------------------------------------------------------------------------------------
 {
-    unsubscribe();
+    /*for (auto & action : mEventSubscriptionsSet) {
+        std::cout << action << std::endl;
+    }*/
+
+    //unsubscribeToEvent(CREATION_OBJECT);
+    //unsubscribeToEvent(DELETE_OBJECT);
+    /*for(auto it = mEventSubscriptionsSet.begin(); it != mEventSubscriptionsSet.end();++it) {
+        unsubscribeToEvent(*it);
+        //mEventSubscriptionsSet.erase(it);
+    }*/
+
+
     sendEvent(std::make_shared<Event>(Event(DELETE_OBJECT)));
 }
 
@@ -26,19 +39,30 @@ void IEventHandler::sendEvent(std::shared_ptr<Event> event)
 }
 
 //------------------------------------------------------------------------------------------
-void IEventHandler::subscribe()
+void IEventHandler::subscribeToEvent(EAction action)
 //------------------------------------------------------------------------------------------
 {
-    mEventManager.subscriptionToEvent(CREATION_OBJECT,this);
-    mEventManager.subscriptionToEvent(DELETE_OBJECT,this);
+    mEventSubscriptionsSet.insert(action);
+    mEventManager.subscriptionToEvent(action,this);
 }
 
 //------------------------------------------------------------------------------------------
-void IEventHandler::unsubscribe()
+void IEventHandler::unsubscribeToEvent(EAction action)
 //------------------------------------------------------------------------------------------
 {
-    mEventManager.unsubscriptionToEvent(CREATION_OBJECT,this);
-    mEventManager.unsubscriptionToEvent(DELETE_OBJECT,this);
+    /*for(auto it = mEventSubscriptionsSet.begin(); it != mEventSubscriptionsSet.end();++it) {
+        if (*it == action) {
+            mEventSubscriptionsSet.erase(it);
+            break;
+        }
+    }*/
+    auto it = mEventSubscriptionsSet.find(action);
+    if (it != mEventSubscriptionsSet.end()) {
+        mEventSubscriptionsSet.erase(it);
+        mEventManager.unsubscriptionToEvent(action,this);
+    }
+
+
 }
 
 
