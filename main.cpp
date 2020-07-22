@@ -9,7 +9,7 @@ int main()
     std::cout << "start main" << std::endl;
 
     EventHandler* obj2 = new EventHandler();
-
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
     EventHandler obj1;
     obj1.subscribeToEvent(CREATION_OBJECT);
     obj1.subscribeToEvent(DELETE_OBJECT);

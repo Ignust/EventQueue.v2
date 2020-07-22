@@ -17,7 +17,10 @@ void EventManager::pushEvent(std::shared_ptr<Event> event)
 //------------------------------------------------------------------------------------------
 {
     std::lock_guard<std::mutex> lock(mMutex);
-    mEventQueue.push(event);
+    if (mRunning){
+        mEventQueue.push(event);
+    }
+
 }
 
 //------------------------------------------------------------------------------------------
