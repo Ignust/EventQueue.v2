@@ -8,14 +8,18 @@ EventHandler::EventHandler(std::string name)
     : IEventHandler(name)
 //------------------------------------------------------------------------------------------
 {
-
+    sendEvent(std::make_shared<Event>(Event(CREATION_OBJECT)));
 }
 
 //------------------------------------------------------------------------------------------
 EventHandler::~EventHandler()
 //------------------------------------------------------------------------------------------
 {
+    while (!mEventSubscriptionsSet.empty()) {
+            unsubscribeToEvent(*mEventSubscriptionsSet.begin());
+        }
 
+    sendEvent(std::make_shared<Event>(Event(DELETE_OBJECT)));
 }
 
 //------------------------------------------------------------------------------------------
@@ -42,5 +46,24 @@ void EventHandler::handleEvent(std::shared_ptr<Event> event)
             break;
 
     }
+}
+
+//------------------------------------------------------------------------------------------
+void EventHandler::subscribeToEvent(EAction action)
+//------------------------------------------------------------------------------------------
+{
+    mEventSubscriptionsSet.insert(action);
+    IEventHandler::subscribeToEvent(action);
+    //mEventManager.subscribe(action,this);
+}
+
+//------------------------------------------------------------------------------------------
+void EventHandler::unsubscribeToEvent(EAction action)
+//------------------------------------------------------------------------------------------
+{
+    //ThreadCout::get().print("IEventHandler::unsubscribeToEvent---");
+    mEventSubscriptionsSet.erase(action);
+    IEventHandler::unsubscribeToEvent(action);
+    //mEventManager.unsubscribe(action,this);
 }
 

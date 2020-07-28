@@ -4,7 +4,7 @@
 #include "EventManager.hpp"
 
 #include <memory>
-#include <set>
+//#include <set>
 
 class EventManager;
 
@@ -22,7 +22,6 @@ protected:
     void sendEvent(std::shared_ptr<Event> event);
 private:
     static EventManager mEventManager;
-    std::set<EAction> mEventSubscriptionsSet;
     std::string mName;
 };
 

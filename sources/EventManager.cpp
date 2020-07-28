@@ -1,4 +1,5 @@
 #include "EventManager.hpp"
+#include "ThreadCout.hpp"
 
 #include <thread>
 //#include <iostream>
@@ -6,102 +7,104 @@
 
 //------------------------------------------------------------------------------------------
 EventManager::EventManager()
-    : mRunning(false)
+    : mHandlerThreadRunning(false)
 //------------------------------------------------------------------------------------------
 {
 
+}
+
+//------------------------------------------------------------------------------------------
+EventManager::~EventManager()
+//------------------------------------------------------------------------------------------
+{
+    ThreadCout::get().print("EventManager::~EventManager()");
 }
 
 //------------------------------------------------------------------------------------------
 void EventManager::pushEvent(std::shared_ptr<Event> event)
 //------------------------------------------------------------------------------------------
 {
-    std::lock_guard<std::mutex> lock(mMutex);
-    if (mRunning){
+    std::lock_guard<std::mutex> lock(mMutexSubscribers);
+    if (mHandlerThreadRunning){
         mEventQueue.push(event);
     }
-
 }
 
 //------------------------------------------------------------------------------------------
-void EventManager::subscriptionToEvent(EAction action,IEventHandler* user)
+void EventManager::subscribe(EAction event, IEventHandler* handler)
 //------------------------------------------------------------------------------------------
 {
-    std::lock_guard<std::mutex> lock(mMutex);
+    //ThreadCout::get().print("EventManager::subscribe-------------");
+    std::lock_guard<std::mutex> lock(mMutexSubscribers);
 
-    mSubscriptionMap[action].push_back(user);
-    if(!mRunning){
-        mRunning = true;
+    mSubscribersMap[event].push_back(handler);
+    if(!mHandlerThreadRunning){
+        mHandlerThreadRunning = true;
         std::thread th([&](){manageEvents();});
         th.detach();
     }
 }
 
 //------------------------------------------------------------------------------------------
-void EventManager::unsubscriptionToEvent(EAction action,IEventHandler* user)
+void EventManager::unsubscribe(EAction event,IEventHandler* handler)
 //------------------------------------------------------------------------------------------
 {
-    std::lock_guard<std::mutex> lock(mMutex);
+    std::lock_guard<std::mutex> lock(mMutexSubscribers);
 
-    auto pair = mSubscriptionMap.find(action);
-    if (pair == mSubscriptionMap.end()){
+    auto pair = mSubscribersMap.find(event);
+    if (pair == mSubscribersMap.end()){
         return;
     }
 
     auto & list = pair->second;
     for (auto it = list.begin(); it != list.end(); ++it) {
-        if (*it == user){
+        if (*it == handler){
+            //ThreadCout::get().print("EventManager::unsubscriptionToEvent()---");
             it = list.erase(it);
             break;
         }
     }
 
     if(list.empty()){
-        mSubscriptionMap.erase(action);
+        mSubscribersMap.erase(event);
     }
-
-    mRunning = !mSubscriptionMap.empty();
+    mHandlerThreadRunning = !mSubscribersMap.empty();
 }
 
 //------------------------------------------------------------------------------------------
 void EventManager::manageEvents()
 //------------------------------------------------------------------------------------------
 {
-    while (getRunning()) {
-        //mMutex.lock();
+    //ThreadCout::get().print("EventManager::manageEvents() start");
+    while (mHandlerThreadRunning) {
         while (!mEventQueue.empty()) {
-            mMutex.lock();
+            mMutexEvents.lock();
             std::shared_ptr<Event> tempEvent = mEventQueue.front();
             mEventQueue.pop();
-            mMutex.unlock();
+            mMutexEvents.unlock();
             sendEvent(tempEvent);
         }
-        //mMutex.unlock();
     }
-    //cout << "manageEvents end" << endl;
+    //ThreadCout::get().print("EventManager::manageEvents() end");
 }
 
 //------------------------------------------------------------------------------------------
 void EventManager::sendEvent(std::shared_ptr<Event> event)
 //------------------------------------------------------------------------------------------
 {
-    std::lock_guard<std::mutex> lock(mMutex);
-    auto pair = mSubscriptionMap.find(event->action);
-    if (pair != mSubscriptionMap.end()) {
+    std::lock_guard<std::mutex> lock(mMutexSubscribers);
+    auto pair = mSubscribersMap.find(event->action);
+    if (pair != mSubscribersMap.end()) {
         const auto & list = pair->second;
         for (auto & subscriber : list) {
+            std::ostringstream os;
+            os << "EventManager::sendEvent to "<<subscriber->getName() << std::endl;
+            ThreadCout::get().print(os);
              subscriber->handleEvent(event);
         }
     }
 
 }
 
-//------------------------------------------------------------------------------------------
-bool EventManager::getRunning()
-//------------------------------------------------------------------------------------------
-{
-    std::lock_guard<std::mutex> lock(mMutex);
-    return mRunning;
-}
 
 
