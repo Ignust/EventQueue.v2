@@ -1,9 +1,9 @@
 #include "EventHandler.hpp"
-
-#include <iostream>
+#include "ThreadCout.hpp"
 
 //------------------------------------------------------------------------------------------
-EventHandler::EventHandler()
+EventHandler::EventHandler(std::string name, std::shared_ptr<IEventHandler> obj)
+    :IEventHandler(name,obj)
 //------------------------------------------------------------------------------------------
 {
 
@@ -20,18 +20,24 @@ EventHandler::~EventHandler()
 void EventHandler::handleEvent(std::shared_ptr<Event> event)
 //------------------------------------------------------------------------------------------
 {
-    switch (event->action) {
-    case DEFAULT:
-        std::cout << "DEFAULT" << std::endl;
+
+ostringstream os;
+      switch (event->action) {
+      case DEFAULT:
+          os << getName() << ": " << "DEFAULT" << endl;
+          ThreadCout::get().print(os);
         break;
     case ACTION1:
-        std::cout << "ACTION1" << std::endl;
+          os << getName() << ": " << "ACTION1" << endl;
+          ThreadCout::get().print(os);
         break;
     case CREATION_OBJECT:
-        std::cout << "CREATION_OBJECT" << std::endl;
+          os << getName() << ": " << "CREATION_OBJECT" << endl;
+          ThreadCout::get().print(os);
         break;
     case DELETE_OBJECT:
-        std::cout << "DELETE_OBJECT" << std::endl;
+          os << getName() << ": " << "DELETE_OBJECT" << endl;
+          ThreadCout::get().print(os);
         break;
 
 

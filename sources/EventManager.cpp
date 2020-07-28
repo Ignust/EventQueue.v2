@@ -1,8 +1,6 @@
 #include "EventManager.hpp"
 
 #include <thread>
-//#include <iostream>
-//using namespace std;
 
 //------------------------------------------------------------------------------------------
 EventManager::EventManager()
@@ -10,6 +8,14 @@ EventManager::EventManager()
 //------------------------------------------------------------------------------------------
 {
 
+}
+
+//------------------------------------------------------------------------------------------
+EventManager::~EventManager()
+
+//------------------------------------------------------------------------------------------
+{
+    ThreadCout::get().print("EventManager::~EventManager()");
 }
 
 //------------------------------------------------------------------------------------------
@@ -24,7 +30,7 @@ void EventManager::pushEvent(std::shared_ptr<Event> event)
 }
 
 //------------------------------------------------------------------------------------------
-void EventManager::subscriptionToEvent(EAction action,IEventHandler* user)
+void EventManager::subscriptionToEvent(EAction action,std::weak_ptr<IEventHandler> user)
 //------------------------------------------------------------------------------------------
 {
     std::lock_guard<std::mutex> lock(mMutex);
@@ -38,7 +44,7 @@ void EventManager::subscriptionToEvent(EAction action,IEventHandler* user)
 }
 
 //------------------------------------------------------------------------------------------
-void EventManager::unsubscriptionToEvent(EAction action,IEventHandler* user)
+void EventManager::unsubscriptionToEvent(EAction action,std::weak_ptr<IEventHandler> user)
 //------------------------------------------------------------------------------------------
 {
     std::lock_guard<std::mutex> lock(mMutex);
@@ -50,7 +56,8 @@ void EventManager::unsubscriptionToEvent(EAction action,IEventHandler* user)
 
     auto & list = pair->second;
     for (auto it = list.begin(); it != list.end(); ++it) {
-        if (*it == user){
+        if (it->lock().get() == user.lock().get()){
+        //if (*it == user){
             it = list.erase(it);
             break;
         }
@@ -88,7 +95,10 @@ void EventManager::sendEvent(std::shared_ptr<Event> event)
     if (pair != mSubscriptionMap.end()) {
         const auto & list = pair->second;
         for (auto & subscriber : list) {
-             subscriber->handleEvent(event);
+            if (subscriber.lock() != 0) {
+                subscriber.lock()->handleEvent(event);
+            }
+            //subscriber->handleEvent(event);
         }
     }
 
