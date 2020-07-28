@@ -6,7 +6,7 @@
 
 class EventHandler: public IEventHandler {
 public:
-    EventHandler();
+    EventHandler(std::string name);
     ~EventHandler();
     void handleEvent(std::shared_ptr<Event> event)override;
 };

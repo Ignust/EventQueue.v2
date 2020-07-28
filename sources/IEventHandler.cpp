@@ -1,12 +1,17 @@
 #include "IEventHandler.hpp"
+#include "ThreadCout.hpp"
 #include <iostream>
 
 EventManager IEventHandler::mEventManager;
 
 //------------------------------------------------------------------------------------------
-IEventHandler::IEventHandler()
+IEventHandler::IEventHandler(std::string name)
+    : mName(name)
 //------------------------------------------------------------------------------------------
 {
+    std::ostringstream os;
+            os << getName() << ": " << "IEventHandler()" << std::endl;
+            ThreadCout::get().print(os);
     //subscribeToEvent(CREATION_OBJECT);
     //subscribeToEvent(DELETE_OBJECT);
     sendEvent(std::make_shared<Event>(Event(CREATION_OBJECT)));
@@ -16,16 +21,13 @@ IEventHandler::IEventHandler()
 IEventHandler::~IEventHandler()
 //------------------------------------------------------------------------------------------
 {
-    /*for (auto & action : mEventSubscriptionsSet) {
-        std::cout << action << std::endl;
-    }*/
+    std::ostringstream os;
+    os << getName() << ": " << "~IEventHandler()" << std::endl;
+    ThreadCout::get().print(os);
 
-    //unsubscribeToEvent(CREATION_OBJECT);
-    //unsubscribeToEvent(DELETE_OBJECT);
-    /*for(auto it = mEventSubscriptionsSet.begin(); it != mEventSubscriptionsSet.end();++it) {
-        unsubscribeToEvent(*it);
-        //mEventSubscriptionsSet.erase(it);
-    }*/
+    while (!mEventSubscriptionsSet.empty()) {
+            unsubscribeToEvent(*mEventSubscriptionsSet.begin());
+        }
 
 
     sendEvent(std::make_shared<Event>(Event(DELETE_OBJECT)));
@@ -50,19 +52,8 @@ void IEventHandler::subscribeToEvent(EAction action)
 void IEventHandler::unsubscribeToEvent(EAction action)
 //------------------------------------------------------------------------------------------
 {
-    /*for(auto it = mEventSubscriptionsSet.begin(); it != mEventSubscriptionsSet.end();++it) {
-        if (*it == action) {
-            mEventSubscriptionsSet.erase(it);
-            break;
-        }
-    }*/
-    auto it = mEventSubscriptionsSet.find(action);
-    if (it != mEventSubscriptionsSet.end()) {
-        mEventSubscriptionsSet.erase(it);
-        mEventManager.unsubscriptionToEvent(action,this);
-    }
-
-
+    mEventSubscriptionsSet.erase(action);
+    mEventManager.unsubscriptionToEvent(action,this);
 }
 
 

@@ -1,23 +1,40 @@
 #include <iostream>
-#include "EventHandler.hpp"
-#include "thread"
-#include "chrono"
+#include <thread>
+#include <chrono>
 
+#include "ThreadCout.hpp"
+#include "EventHandler.hpp"
+
+
+void test();
 
 int main()
 {
-    std::cout << "start main" << std::endl;
+    ThreadCout::get().print("start main");
 
-    EventHandler* obj2 = new EventHandler();
+    EventHandler* obj1 = new EventHandler("obj1");
     std::this_thread::sleep_for(std::chrono::milliseconds(500));
-    EventHandler obj1;
-    obj1.subscribeToEvent(CREATION_OBJECT);
-    obj1.subscribeToEvent(DELETE_OBJECT);
-    EventHandler obj3;
-    delete obj2;
+    EventHandler obj2("obj2");
+    obj2.subscribeToEvent(CREATION_OBJECT);
+    obj2.subscribeToEvent(DELETE_OBJECT);
+    EventHandler obj3("obj3");
+    delete obj1;
+
 
     std::this_thread::sleep_for(std::chrono::milliseconds(1500));
-    std::cout << "end main" << std::endl;
+    ThreadCout::get().print("end main");
 
     return 0;
+}
+
+
+void test()
+{
+    EventHandler* obj1 = new EventHandler("obj1");
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    EventHandler obj2("obj2");
+    obj2.subscribeToEvent(CREATION_OBJECT);
+    obj2.subscribeToEvent(DELETE_OBJECT);
+    EventHandler obj3("obj3");
+    delete obj1;
 }

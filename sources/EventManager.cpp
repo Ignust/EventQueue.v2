@@ -68,6 +68,7 @@ void EventManager::manageEvents()
 //------------------------------------------------------------------------------------------
 {
     while (getRunning()) {
+        //mMutex.lock();
         while (!mEventQueue.empty()) {
             mMutex.lock();
             std::shared_ptr<Event> tempEvent = mEventQueue.front();
@@ -75,6 +76,7 @@ void EventManager::manageEvents()
             mMutex.unlock();
             sendEvent(tempEvent);
         }
+        //mMutex.unlock();
     }
     //cout << "manageEvents end" << endl;
 }
