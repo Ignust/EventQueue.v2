@@ -1,5 +1,5 @@
-#ifndef IEVENTHANDLER_HPP
-#define IEVENTHANDLER_HPP
+#ifndef BASICEVENTHANDLER_HPP
+#define BASICEVENTHANDLER_HPP
 
 #include "EventManager.hpp"
 
@@ -9,10 +9,10 @@
 class EventManager;
 
 
-class IEventHandler {
+class BasicEventHandler {
 public:
-    IEventHandler(std::string name);
-    virtual~IEventHandler();
+    BasicEventHandler(std::string name);
+    virtual~BasicEventHandler();
     virtual void handleEvent(std::shared_ptr<Event> event);
     void subscribeToEvent(EAction action);
     void unsubscribeFromEvent(EAction action);
@@ -26,4 +26,4 @@ private:
     std::string mName;
 };
 
-#endif //IEVENTHANDLER_HPP
+#endif //BASICEVENTHANDLER_HPP
