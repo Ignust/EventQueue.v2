@@ -4,23 +4,26 @@
 #include "EventManager.hpp"
 
 #include <memory>
+#include <set>
 
 class EventManager;
 
 
 class IEventHandler {
 public:
-    IEventHandler();
+    IEventHandler(std::string name);
     virtual~IEventHandler();
-    virtual void handleEvent(std::shared_ptr<Event> event) = 0;
+    virtual void handleEvent(std::shared_ptr<Event> event);
+    void subscribeToEvent(EAction action);
+    void unsubscribeToEvent(EAction action);
+    inline std::string getName(){return mName;}
 
 protected:
     void sendEvent(std::shared_ptr<Event> event);
 private:
-    void subscribe();
-    void unsubscribe();
-
     static EventManager mEventManager;
+    std::set<EAction> mEventSubscriptionsSet;
+    std::string mName;
 };
 
 #endif //IEVENTHANDLER_HPP
