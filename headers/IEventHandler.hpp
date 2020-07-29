@@ -15,7 +15,7 @@ public:
     virtual~IEventHandler();
     virtual void handleEvent(std::shared_ptr<Event> event);
     void subscribeToEvent(EAction action);
-    void unsubscribeToEvent(EAction action);
+    void unsubscribeFromEvent(EAction action);
     inline std::string getName(){return mName;}
 
 protected:
