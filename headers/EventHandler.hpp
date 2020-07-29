@@ -1,11 +1,11 @@
 #ifndef EVENTHANDLER_HPP
 #define EVENTHANDLER_HPP
 
-#include "IEventHandler.hpp"
+#include "BasicEventHandler.hpp"
 #include <set>
 
 
-class EventHandler: public IEventHandler {
+class EventHandler: public BasicEventHandler {
 public:
     EventHandler(std::string name);
     ~EventHandler();

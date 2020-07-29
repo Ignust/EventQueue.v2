@@ -16,7 +16,7 @@ set(SOURCES
     main.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/sources/EventHandler.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/sources/EventManager.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/sources/IEventHandler.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/sources/BasicEventHandler.cpp
 )
 
 add_executable(EventQueue.v2 ${SOURCES})

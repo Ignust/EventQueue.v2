@@ -31,7 +31,7 @@ void EventManager::pushEvent(std::shared_ptr<Event> event)
 }
 
 //------------------------------------------------------------------------------------------
-void EventManager::subscribe(EAction event, IEventHandler* handler)
+void EventManager::subscribe(EAction event, BasicEventHandler* handler)
 //------------------------------------------------------------------------------------------
 {
     //ThreadCout::get().print("EventManager::subscribe-------------");
@@ -46,7 +46,7 @@ void EventManager::subscribe(EAction event, IEventHandler* handler)
 }
 
 //------------------------------------------------------------------------------------------
-void EventManager::unsubscribe(EAction event,IEventHandler* handler)
+void EventManager::unsubscribe(EAction event,BasicEventHandler* handler)
 //------------------------------------------------------------------------------------------
 {
     std::lock_guard<std::mutex> lock(mMutexSubscribers);

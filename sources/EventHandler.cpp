@@ -5,7 +5,7 @@
 
 //------------------------------------------------------------------------------------------
 EventHandler::EventHandler(std::string name)
-    : IEventHandler(name)
+    : BasicEventHandler(name)
 //------------------------------------------------------------------------------------------
 {
     sendEvent(std::make_shared<Event>(Event(CREATION_OBJECT)));

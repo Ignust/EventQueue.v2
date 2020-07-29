@@ -1,25 +1,25 @@
-#include "IEventHandler.hpp"
+#include "BasicEventHandler.hpp"
 #include "ThreadCout.hpp"
 #include <iostream>
 
-EventManager IEventHandler::mEventManager;
+EventManager BasicEventHandler::mEventManager;
 
 //------------------------------------------------------------------------------------------
-IEventHandler::IEventHandler(std::string name)
+BasicEventHandler::BasicEventHandler(std::string name)
     : mName(name)
 //------------------------------------------------------------------------------------------
 {
     std::ostringstream os;
-    os << getName() << ": " << "IEventHandler()" << std::endl;
+    os << getName() << ": " << "BasicEventHandler()" << std::endl;
     ThreadCout::get().print(os);
 }
 
 //------------------------------------------------------------------------------------------
-IEventHandler::~IEventHandler()
+BasicEventHandler::~BasicEventHandler()
 //------------------------------------------------------------------------------------------
 {
     std::ostringstream os;
-    os << getName() << ": " << "~IEventHandler()" << std::endl;
+    os << getName() << ": " << "~BasicEventHandler()" << std::endl;
     ThreadCout::get().print(os);
 
     while (!mEventSubscriptionsSet.empty()) {
@@ -28,17 +28,17 @@ IEventHandler::~IEventHandler()
 }
 
 //------------------------------------------------------------------------------------------
-void IEventHandler::handleEvent(std::shared_ptr<Event> event)
+void BasicEventHandler::handleEvent(std::shared_ptr<Event> event)
 //------------------------------------------------------------------------------------------
 {
     event.get();//**//
     std::ostringstream os;
-    os << getName() << ": " << "IEventHandler::handleEvent()" << std::endl;
+    os << getName() << ": " << "BasicEventHandler::handleEvent()" << std::endl;
     ThreadCout::get().print(os);
 }
 
 //------------------------------------------------------------------------------------------
-void IEventHandler::subscribeToEvent(EAction action)
+void BasicEventHandler::subscribeToEvent(EAction action)
 //------------------------------------------------------------------------------------------
 {
     mEventSubscriptionsSet.insert(action);
@@ -46,16 +46,16 @@ void IEventHandler::subscribeToEvent(EAction action)
 }
 
 //------------------------------------------------------------------------------------------
-void IEventHandler::unsubscribeFromEvent(EAction action)
+void BasicEventHandler::unsubscribeFromEvent(EAction action)
 //------------------------------------------------------------------------------------------
 {
-    //ThreadCout::get().print("IEventHandler::unsubscribeToEvent");
+    //ThreadCout::get().print("BasicEventHandler::unsubscribeToEvent");
     mEventSubscriptionsSet.erase(action);
     mEventManager.unsubscribe(action,this);
 }
 
 //------------------------------------------------------------------------------------------
-void IEventHandler::sendEvent(std::shared_ptr<Event> event)
+void BasicEventHandler::sendEvent(std::shared_ptr<Event> event)
 //------------------------------------------------------------------------------------------
 {
     mEventManager.pushEvent(event);
