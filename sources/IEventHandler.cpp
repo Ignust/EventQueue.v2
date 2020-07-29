@@ -23,7 +23,7 @@ IEventHandler::~IEventHandler()
     ThreadCout::get().print(os);
 
     while (!mEventSubscriptionsSet.empty()) {
-            unsubscribeToEvent(*mEventSubscriptionsSet.begin());
+            unsubscribeFromEvent(*mEventSubscriptionsSet.begin());
         }
 }
 
@@ -46,7 +46,7 @@ void IEventHandler::subscribeToEvent(EAction action)
 }
 
 //------------------------------------------------------------------------------------------
-void IEventHandler::unsubscribeToEvent(EAction action)
+void IEventHandler::unsubscribeFromEvent(EAction action)
 //------------------------------------------------------------------------------------------
 {
     //ThreadCout::get().print("IEventHandler::unsubscribeToEvent");
